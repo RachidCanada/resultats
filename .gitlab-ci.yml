@@ -1,0 +1,42 @@
+stages:
+  - build
+  - test
+  - package
+
+variables:
+  MAVEN_CLI_OPTS: "-s settings.xml --batch-mode --errors --fail-at-end"
+  JAVA_HOME: "/docker-java-home"
+
+cache:
+  paths:
+    - .m2/repository/
+
+build:
+  stage: build
+  image: maven:3.8.5-openjdk-17
+  script:
+    - echo "Building the application..."
+    - mvn $MAVEN_CLI_OPTS clean compile
+  only:
+    - main
+
+test:
+  stage: test
+  image: maven:3.8.5-openjdk-17
+  script:
+    - echo "Running tests..."
+    - mvn $MAVEN_CLI_OPTS test
+  only:
+    - main
+
+package:
+  stage: package
+  image: maven:3.8.5-openjdk-17
+  script:
+    - echo "Packaging the application..."
+    - mvn $MAVEN_CLI_OPTS clean package
+  artifacts:
+    paths:
+      - target/*.jar
+  only:
+    - main
