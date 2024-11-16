@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gestion des Résultats</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            text-align: center;
+            color: #343a40;
+        }
+
+        h2 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        form {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 5px;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #495057;
+            margin-right: 10px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        th {
+            background-color: #343a40;
+            color: white;
+        }
+
+        td {
+            color: #495057;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestion des Résultats</h1>
+
+        <!-- Formulaire pour Ajouter/Modifier un Résultat -->
+        <h2 th:text="${#strings.isEmpty(resultat.id) ? 'Ajouter un Résultat' : 'Modifier le Résultat'}"></h2>
+        <form th:action="@{/resultat}" th:object="${resultat}" method="post">
+            <input type="hidden" th:field="*{id}">
+            <label for="nom">Nom :</label>
+            <input type="text" id="nom" name="nom" th:field="*{nom}" placeholder="Entrez le nom" required>
+            <label for="note">Note :</label>
+            <input type="number" id="note" name="note" th:field="*{note}" placeholder="Entrez la note" step="0.01" required>
+            <button type="submit" th:text="${#strings.isEmpty(resultat.id) ? 'Ajouter' : 'Modifier'}"></button>
+        </form>
+
+        <!-- Tableau pour afficher les résultats -->
+        <h2>Liste des Résultats</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Note</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="resultat : ${resultats}">
+                    <td th:text="${resultat.id}"></td>
+                    <td th:text="${resultat.nom}"></td>
+                    <td th:text="${resultat.note}"></td>
+                    <td>
+                        <a th:href="@{/resultat(id=${resultat.id})}">Modifier</a>
+                        <a th:href="@{/resultat/supprimer/{id}(id=${resultat.id})}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce résultat ?')">Supprimer</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(resultats)}">
+                    <td colspan="4" style="text-align: center;">Aucun résultat trouvé.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
