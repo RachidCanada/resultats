@@ -2,6 +2,7 @@ stages:
   - build
   - test
   - package
+  - deploy
 
 variables:
   MAVEN_CLI_OPTS: "-s settings.xml --batch-mode --errors --fail-at-end"
@@ -38,5 +39,14 @@ package:
   artifacts:
     paths:
       - target/*.jar
+  only:
+    - main
+
+deploy:
+  stage: deploy
+  image: openjdk:17
+  script:
+    - echo "Starting the application..."
+    - java -jar target/*.jar
   only:
     - main
